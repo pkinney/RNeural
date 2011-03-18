@@ -54,6 +54,25 @@ describe "A Neuron" do
     expect{@input1.set_transfer_function(:bad_function)}.to raise_error
   end
 
+  it "should raise an error if the output is requested when no input was set" do
+    expect{@output.output}.to raise_error
+    expect{@hidden1.output}.to raise_error
+    expect{@hidden2.output}.to raise_error
+    expect{@hidden3.output}.to raise_error
+    expect{@pass_through_out.output}.to raise_error
+    expect{@input1.output}.to raise_error
+    expect{@input2.output}.to raise_error
+
+    @input1.input(0.5)
+    @input2.input(1.2)
+    expect{@input1.output}.not_to raise_error
+    expect{@input2.output}.not_to raise_error
+    expect{@hidden1.output}.not_to raise_error
+    expect{@hidden2.output}.not_to raise_error
+    expect{@hidden3.output}.not_to raise_error
+    expect{@output.output}.not_to raise_error
+  end
+
   it "should accept a custom transfer function as a block" do
     @pass_through_out.set_transfer_function {|a| a + 1}
     TEST_VALUES.each do |kv|
