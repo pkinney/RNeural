@@ -1,0 +1,3 @@
+== RNN (A Neural Network implementation in Ruby)
+
+_More to come..._
