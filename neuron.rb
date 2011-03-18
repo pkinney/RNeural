@@ -46,13 +46,14 @@ class Neuron
     @bias = b
   end
 
-  def set_transfer_function(func)
+  def set_transfer_function(func=nil, &block)
     if func.is_a? Symbol
       raise "Unknown transfer function: #{func}. Use one of [#{TRANSFER_FUNCTIONS.keys.join(", ")}]" unless TRANSFER_FUNCTIONS.keys.include? func
       @transfer = TRANSFER_FUNCTIONS[func]
-      puts "Transfer function changed to #{func}"
     elsif func.is_a? Proc
       @transfer = func
+    elsif block
+      @transfer = block
     end
   end
 

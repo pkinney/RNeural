@@ -54,6 +54,34 @@ describe "A Neuron" do
     expect{@input1.set_transfer_function(:bad_function)}.to raise_error
   end
 
+  it "should accept a custom transfer function as a block" do
+    @pass_through_out.set_transfer_function {|a| a + 1}
+    TEST_VALUES.each do |kv|
+      @pass_through_in.input(kv)
+      @pass_through_out.output.should == kv+1
+    end
+
+    @pass_through_out.set_transfer_function {|a| 4}
+    TEST_VALUES.each do |kv|
+      @pass_through_in.input(kv)
+      @pass_through_out.output.should == 4
+    end
+  end
+
+  it "should accept a custom transfer function as a Proc" do
+    @pass_through_out.set_transfer_function Proc.new{|a| a + 1}
+    TEST_VALUES.each do |kv|
+      @pass_through_in.input(kv)
+      @pass_through_out.output.should == kv+1
+    end
+
+    @pass_through_out.set_transfer_function Proc.new{|a| 4}
+    TEST_VALUES.each do |kv|
+      @pass_through_in.input(kv)
+      @pass_through_out.output.should == 4
+    end
+  end
+
   it "should get output from a single input-output pair" do
     @pass_through_out.set_transfer_function(:linear)
     TEST_VALUES.each do |kv|
@@ -116,13 +144,9 @@ describe "A Neuron" do
     h2_e = (0.5*0.2+1.2*1.5)
     h3_e = (0.5*0.3+1.2*0.6)
 
-#    h1_e = (1.0+Math.tanh(h1_e))/2.0
-#    h2_e = (1.0+Math.tanh(h2_e))/2.0
-#    h3_e = (1.0+Math.tanh(h3_e))/2.0
-
     o = h1_e*0.3 + h2_e*0.5 + h3_e*0.2
 
-    @output.output.should be_within(0.001).of(o)
+    @output.output.should be_within(0.00001).of(o)
   end
 
 end
