@@ -6,11 +6,11 @@ class Neuron
       :linear => Proc.new{|value| value}
   }
   
-  def initialize(inputs = [])
-    @inputs = inputs
+  def initialize(inputs = nil)
+    @inputs = inputs || []
     @weights = {}
     @transfer = TRANSFER_FUNCTIONS[:sigmoid]
-    inputs.each{|i| @weights[i] = random_weight}
+    @inputs.each{|i| @weights[i] = random_weight}
   end
 
   def input(inp)
