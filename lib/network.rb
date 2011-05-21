@@ -46,6 +46,12 @@ class Network
   def num_hidden_neurons
     @all_neurons.size - @outputs.size - @inputs.size
   end
+  
+  def num_connections
+    sum = 0
+    @all_neurons.each {|n| sum += n.input_neurons.size }
+    sum
+  end
 
   private
   def add_neuron_and_its_inputs(neuron)

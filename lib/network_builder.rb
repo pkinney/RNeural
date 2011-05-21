@@ -9,7 +9,7 @@ class NetworkBuilder
       layer = []
       count.times{ layer << Neuron.new() }
       layer.each{|n1| layers.last.each{|n2| n1.add_input_neuron(n2)}} unless layers.empty?
-      puts "Add layer with #{layer.size} neurons"
+#      puts "Add layer with #{layer.size} neurons"
       layers << layer
     end
 
