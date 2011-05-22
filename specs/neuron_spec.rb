@@ -7,7 +7,7 @@ describe "A Neuron" do
     @pass_through_in = Neuron.new()
     @pass_through_out = Neuron.new([@pass_through_in])
     @pass_through_out.set_weight(@pass_through_in,1)
-    @pass_through_out.set_bias(0)
+    @pass_through_out.bias_weight=0
 
     @all_neurons = []
     @all_neurons << @input1 = Neuron.new()
@@ -147,14 +147,14 @@ describe "A Neuron" do
     @hidden1.set_weight(@input2, 0.4)
     @hidden2.set_weight(@input2, 1.5)
     @hidden3.set_weight(@input2, 0.6)
-    @hidden1.set_bias(0)
-    @hidden2.set_bias(0)
-    @hidden3.set_bias(0)
+    @hidden1.bias_weight=0
+    @hidden2.bias_weight=0
+    @hidden3.bias_weight=0
 
     @output.set_weight(@hidden1, 0.3)
     @output.set_weight(@hidden2, 0.5)
     @output.set_weight(@hidden3, 0.2)
-    @output.set_bias(0)
+    @output.bias_weight=0
 
     @input1.input(0.5)
     @input2.input(1.2)

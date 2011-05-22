@@ -1,30 +1,34 @@
 require "neuron"
 
 class Network
+  attr_reader :all_neurons
+  attr_reader :input_neurons
+  attr_reader :output_neurons
+  
   def initialize(output_neurons = [], input_neurons = nil)
     @all_neurons = []
-    @inputs = []
-    @outputs = []
-    @outputs << output_neurons
-    @outputs.flatten!
+    @input_neurons = []
+    @output_neurons = []
+    @output_neurons << output_neurons
+    @output_neurons.flatten!
 
-    @outputs.each {|n| add_neuron_and_its_inputs(n)}
+    @output_neurons.each {|n| add_neuron_and_its_inputs(n)}
 
     if input_neurons
-      raise "The input neuron list is not the exact inputs for the output neurons" unless input_neurons.size == @inputs.size && @inputs.all?{|n| input_neurons.include?(n)}
-      @inputs = input_neurons
+      raise "The input neuron list is not the exact inputs for the output neurons" unless input_neurons.size == @input_neurons.size && @input_neurons.all?{|n| input_neurons.include?(n)}
+      @input_neurons = input_neurons
     end
   end
 
   def input(*values)
     raise "This network has not been built yet" unless built?
     raise "This network only accepts #{num_input_neurons} inputs, not #{values.flatten.size}" unless values.flatten.size == num_input_neurons
-
+    
     for i in 0...num_input_neurons do
-      @inputs[i].input(values.flatten[i])
+      @input_neurons[i].input(values.flatten[i])
     end
 
-    @outputs.collect{|o| o.output}
+    @output_neurons.collect{|o| o.output}
   end
 
   def built?
@@ -36,28 +40,29 @@ class Network
   end
 
   def num_input_neurons
-    @inputs.size
+    @input_neurons.size
   end
 
   def num_output_neurons
-    @outputs.size
+    @output_neurons.size
   end
 
   def num_hidden_neurons
-    @all_neurons.size - @outputs.size - @inputs.size
+    num_neurons - num_output_neurons - num_input_neurons
   end
   
   def num_connections
     sum = 0
-    @all_neurons.each {|n| sum += n.input_neurons.size }
+    @all_neurons.each { |n| sum += n.input_neurons.size }
     sum
   end
 
   private
+  
   def add_neuron_and_its_inputs(neuron)
     @all_neurons << neuron unless @all_neurons.include?(neuron)
     if neuron.input_neuron?
-      @inputs << neuron unless @inputs.include?(neuron)
+      @input_neurons << neuron unless @input_neurons.include?(neuron)
     else
       neuron.input_neurons.each{|n| add_neuron_and_its_inputs(n)}
     end

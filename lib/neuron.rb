@@ -6,11 +6,21 @@ class Neuron
       :linear => Proc.new{|value| value}
   }
   
+  attr_reader :last_output
+  attr_reader :last_pretransfer_output
+  attr_reader :inputs
+  alias :input_neurons :inputs
+  
+  attr_accessor :bias_weight
+  attr_reader :bias
+  
   def initialize(inputs = nil)
     @inputs = inputs || []
     @weights = {}
     @transfer = TRANSFER_FUNCTIONS[:sigmoid]
     @inputs.each{|i| @weights[i] = random_weight}
+    @bias = -1
+    @bias_weight = random_weight
   end
 
   def input(inp)
@@ -21,9 +31,11 @@ class Neuron
   def output
     if input_neuron?
       raise "Cannot get output of input neuron that has not had its value set" unless @input_value
-      @input_value
+      @last_output = @last_pretransfer_output = @input_value
     else
-      transfer_function(@inputs.collect{|i| i.output * @weights[i]}.inject(:+) + (@bias || 0))
+      b = input_neuron? ? 0 : (@bias || -1) * (@bias_weight || 0)
+      @last_pretransfer_output = @inputs.collect{|i| i.output * @weights[i]}.inject(:+) + b
+      @last_output = transfer_function(@last_pretransfer_output)
     end
   end
 
@@ -42,8 +54,8 @@ class Neuron
     @weights[n] = weight if @inputs.include?(n)
   end
 
-  def set_bias(b)
-    @bias = b
+  def weight_for(n)
+    @weights[n]
   end
 
   def set_transfer_function(func=nil, &block)
@@ -57,16 +69,16 @@ class Neuron
     end
   end
 
-  def input_neurons
-    @inputs
+  def transfer_function(value)
+    (@transfer || TRANSFER_FUNCTIONS[:sigmoid]).call(value)
+  end
+  
+  def der_transfer_function(value)
+    (transfer_function(value) - transfer_function(value-0.0001))/0.0001
   end
 
 private
   def random_weight
     rand
-  end
-
-  def transfer_function(value)
-    (@transfer || TRANSFER_FUNCTIONS[:sigmoid]).call(value)
   end
 end

@@ -1,5 +1,6 @@
 require "rspec"
 require "network"
+require "network_builder"
 
 describe "Network" do
   TEST_VALUES = [1.4, 2.7, 0.35, 0.1, 0, -5, 10000, -10000, 0.000001, 0.999999, 1.0000001]
@@ -7,7 +8,7 @@ describe "Network" do
     @pass_through_in = Neuron.new()
     @pass_through_out = Neuron.new([@pass_through_in])
     @pass_through_out.set_weight(@pass_through_in,1)
-    @pass_through_out.set_bias(0)
+    @pass_through_out.bias_weight=0
 
     @all_neurons = []
     @all_neurons << @input1 = Neuron.new()
@@ -87,14 +88,14 @@ describe "Network" do
     @hidden1.set_weight(@input2, 0.4)
     @hidden2.set_weight(@input2, 1.5)
     @hidden3.set_weight(@input2, 0.6)
-    @hidden1.set_bias(0)
-    @hidden2.set_bias(0)
-    @hidden3.set_bias(0)
+    @hidden1.bias_weight = 0
+    @hidden2.bias_weight = 0
+    @hidden3.bias_weight = 0
 
     @output.set_weight(@hidden1, 0.3)
     @output.set_weight(@hidden2, 0.5)
     @output.set_weight(@hidden3, 0.2)
-    @output.set_bias(0)
+    @output.bias_weight = 0
 
     h1_e = (0.5*0.1+0.5*0.4)
     h2_e = (0.5*0.2+0.5*1.5)
@@ -105,8 +106,7 @@ describe "Network" do
     Network.new(@output).input(0.5, 0.5)[0].should be_within(0.00001).of(o)
   end
 
-  #TODO: this needs to be tested with more than two inputs
-  it "should take a set of inputs and run it through the neurons and maintain the order of input neurons" do
+  it "should take a set of inputs and maintain the order of input neurons" do
     @all_neurons.each{|a| a.set_transfer_function(:linear)}
 
     @hidden1.set_weight(@input1, 0.1)
@@ -115,14 +115,14 @@ describe "Network" do
     @hidden1.set_weight(@input2, 0.4)
     @hidden2.set_weight(@input2, 1.5)
     @hidden3.set_weight(@input2, 0.6)
-    @hidden1.set_bias(0)
-    @hidden2.set_bias(0)
-    @hidden3.set_bias(0)
+    @hidden1.bias_weight = 0
+    @hidden2.bias_weight = 0
+    @hidden3.bias_weight = 0
 
     @output.set_weight(@hidden1, 0.3)
     @output.set_weight(@hidden2, 0.5)
     @output.set_weight(@hidden3, 0.2)
-    @output.set_bias(0)
+    @output.bias_weight = 0
 
     h1_e = (0.5*0.1+1.2*0.4)
     h2_e = (0.5*0.2+1.2*1.5)
