@@ -1,3 +1,4 @@
 == RNeural (A Neural Network implementation in Ruby)
+[![Build Status](https://secure.travis-ci.org/pkinney/RNeural.png)](http://travis-ci.org/pkinney/RNeural)
 
 For now, this only supplies a feed-forward network.  More to come...
